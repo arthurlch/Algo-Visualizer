@@ -2,6 +2,17 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "ESNext",
+    "baseUrl": "src",
+    "paths": {
+      "@/algorithms/*": ["algorithms/*"],
+      "@/assets/*": ["assets/*"],
+      "@/features/*": ["features/*"],
+      "@/pages/*": ["pages/*"],
+      "@/routes/*": ["routes/*"],
+      "@/states/*": ["states/*"],
+      "@/styles/*": ["styles/*"],
+      "@/utils/*": ["utils/*"]
+    },
     "moduleResolution": "node",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "outDir": "./dist",
@@ -10,7 +21,8 @@
     "declarationMap": true,
     "sourceMap": true,
     "removeComments": true,
-
+    "skipLibCheck": true,
+    "types": ["node", "react"],
     /* Strict Type-Checking Options */
     "strict": true,
     "noImplicitAny": true,
@@ -33,6 +45,9 @@
     /* Linting */
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*",
+  ],
+  "exclude": ["node_modules", "dist", "node_modules/@types/node/globals.d.ts"
+]
 }
