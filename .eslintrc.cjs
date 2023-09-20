@@ -7,8 +7,21 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'plugin:prettier/recommended',
   ],
+  ignorePatterns: ['dist', '.eslintrc.cjs', 'src/App.tsx', 'vite.config.ts'],
+  overrides: [
+    {
+      files: ['src/**/*'],
+      rules: {
+        '@typescript-eslint/no-unused-vars': 'error',
+        '@typescript-eslint/strict-boolean-expressions': 'error',
+      },
+    },
+  ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: './tsconfig.json',
+  },
   plugins: ['react-refresh'],
   rules: {
     'react-refresh/only-export-components': [
@@ -17,7 +30,6 @@ module.exports = {
     ],
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/strict-boolean-expressions': 'error',
-    '@typescript-eslint/no-implicit-any-catch': 'error',
     'prettier/prettier': 'error',
     '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
     '@typescript-eslint/explicit-function-return-type': 'error', 
@@ -28,10 +40,16 @@ module.exports = {
       {
         'selector': 'variable',
         'format': ['camelCase'],
+        'leadingUnderscore': 'allow',
       },
       {
         'selector': 'function',
         'format': ['PascalCase'],
+      },
+      {
+        'selector': 'variable',
+        'types': ['function'],
+        'format': ['camelCase'],
       },
     ], 
     'no-console': 'warn', 

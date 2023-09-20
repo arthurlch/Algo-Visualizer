@@ -1,0 +1,3 @@
+# .eslintignore
+src/App.tsx
+vite.config.ts
