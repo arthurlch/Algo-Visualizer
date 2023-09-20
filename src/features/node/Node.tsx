@@ -21,7 +21,7 @@ function Node({
   onMouseDown,
   onMouseEnter,
   onMouseUp,
-}): React.FC<NodeProps> {
+}: NodeProps): React.ReactElement {
   const handleMouseDown = (): void => {
     onMouseDown(row, col);
   };
