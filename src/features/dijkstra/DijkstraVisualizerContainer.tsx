@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
-  GetInitialGrid,
-  GetNewGridWithToggledWall,
+  getInitialGrid,
+  getNewGridWithToggledWall,
   startNodeRow,
   startNodeCol,
   finishNodeRow,
@@ -9,18 +9,20 @@ import {
 } from '../grid/Grid';
 import Node from '../node/Node';
 import { Dijkstra, GetNodesInShortestPathOrder } from '@/algorithms/dijkstra';
+import type { Node as NodeType } from '../grid/Grid';
+import '@/styles/feature/dijkstra_visualizer.css';
 
-function DijkstraVisualizer() {
-  const [grid, setGrid] = useState<any[][]>([]);
+function DijkstraVisualizer(): React.ReactElement {
+  const [grid, setGrid] = useState<NodeType[][]>([]);
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
 
   useEffect(() => {
-    const initialGrid = GetInitialGrid();
+    const initialGrid = getInitialGrid();
     setGrid(initialGrid);
   }, []);
 
   const handleMouseDown = (row: number, col: number): void => {
-    const newGrid = GetNewGridWithToggledWall(grid, row, col);
+    const newGrid = getNewGridWithToggledWall(grid, row, col);
     setGrid(newGrid);
     setMouseIsPressed(true);
   };
@@ -29,7 +31,7 @@ function DijkstraVisualizer() {
     if (!mouseIsPressed) {
       return;
     }
-    const newGrid = GetNewGridWithToggledWall(grid, row, col);
+    const newGrid = getNewGridWithToggledWall(grid, row, col);
     setGrid(newGrid);
   };
 
@@ -38,8 +40,8 @@ function DijkstraVisualizer() {
   };
 
   const animateDijkstra = (
-    visitedNodesInOrder: any[],
-    nodesInShortestPathOrder: any[],
+    visitedNodesInOrder: NodeType[],
+    nodesInShortestPathOrder: NodeType[],
   ): void => {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
@@ -65,7 +67,7 @@ function DijkstraVisualizer() {
     animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   };
 
-  const animateShortestPath = (nodesInShortestPathOrder: any[]): void => {
+  const animateShortestPath = (nodesInShortestPathOrder: NodeType[]): void => {
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
@@ -98,10 +100,9 @@ function DijkstraVisualizer() {
                   isFinish={isFinish}
                   isStart={isStart}
                   isWall={isWall}
-                  mouseIsPressed={mouseIsPressed}
-                  onMouseDown={(row, col) => handleMouseDown(row, col)}
-                  onMouseEnter={(row, col) => handleMouseEnter(row, col)}
-                  onMouseUp={() => handleMouseUp()}
+                  onMouseDown={(row, col): void => handleMouseDown(row, col)}
+                  onMouseEnter={(row, col): void => handleMouseEnter(row, col)}
+                  onMouseUp={(): void => handleMouseUp()}
                   row={row}
                 />
               );

@@ -9,7 +9,7 @@ type NodeProps = {
   isWall: boolean;
   onMouseDown: (row: number, col: number) => void;
   onMouseEnter: (row: number, col: number) => void;
-  onMouseUp: () => void;
+  onMouseUp?: () => void;
 };
 
 function Node({

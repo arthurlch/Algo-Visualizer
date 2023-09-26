@@ -1,11 +1,4 @@
-type Node = {
-  distance: number;
-  isWall: boolean;
-  isVisited: boolean;
-  col: number;
-  row: number;
-  previousNode: Node | null;
-};
+import type { Node } from '@/features/grid/Grid';
 
 export function Dijkstra(
   grid: Node[][],
@@ -14,9 +7,8 @@ export function Dijkstra(
 ): Node[] {
   const visitedNodesInOrder: Node[] = [];
   startNode.distance = 0;
-
   const unvisitedNodes = GetAllNodes(grid);
-
+  const unvisitedSet = new Set<Node>(unvisitedNodes);
   while (unvisitedNodes.length) {
     unvisitedNodes.sort((a, b) => a.distance - b.distance);
     const closestNode = unvisitedNodes.shift();
@@ -35,7 +27,7 @@ export function Dijkstra(
     if (closestNode === finishNode) {
       return visitedNodesInOrder;
     }
-    UpdateUnvisitedNeighbors(closestNode, grid, unvisitedNodes);
+    UpdateUnvisitedNeighbors(closestNode, grid, unvisitedNodes, unvisitedSet);
   }
   return visitedNodesInOrder;
 }
@@ -44,12 +36,16 @@ function UpdateUnvisitedNeighbors(
   node: Node,
   grid: Node[][],
   unvisitedNodes: Node[],
+  unvisitedSet: Set<Node>,
 ): void {
   const neighbors = GetUnvisitedNeighbors(node, grid);
   for (const neighbor of neighbors) {
     neighbor.distance = node.distance + 1;
     neighbor.previousNode = node;
-    unvisitedNodes.push(neighbor);
+    if (!unvisitedSet.has(neighbor)) {
+      unvisitedNodes.push(neighbor);
+      unvisitedSet.add(neighbor);
+    }
   }
 }
 

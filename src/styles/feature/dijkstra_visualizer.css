@@ -1,0 +1,48 @@
+.grid {
+  width: 80%;
+  margin-top: 60px;
+  text-align: center;
+  align-items: center;
+  align-content: center;
+}
+
+.node-wrapper {
+  display: flex;
+  margin-left: 300px;
+  text-align: center;
+  align-items: center;
+  align-content: center;
+}
+
+.btn-wrapper {
+  margin-top: 30px;
+  margin-left: 300px;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  align-content: center;
+  display: inline-block;
+}
+
+.btn {
+  background-color: blue;
+  color: white;
+  padding: 9px 9px 9px 9px;
+  border-radius: 10px;
+  border: blue solid 1px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.btn:hover {
+  background-color: rgb(29, 29, 122);
+  color: white;
+  border: solid 1px white;
+}
+
+.btn-reset {
+  margin-left: 10px;
+}
+.instruction {
+  font-size: 14px;
+}
