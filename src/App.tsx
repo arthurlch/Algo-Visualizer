@@ -1,9 +1,7 @@
 import DijkstraVisualizer from './features/dijkstra/DijkstraVisualizerContainer';
 
 function App() {
-  return (
-      <DijkstraVisualizer/>
-  );
+  return <DijkstraVisualizer />;
 }
 
 export default App;
