@@ -8,7 +8,7 @@ import {
   finishNodeCol,
 } from '../grid/Grid';
 import Node from '../node/Node';
-import { Dijkstra, GetNodesInShortestPathOrder } from '@/algorithms/dijkstra';
+import { Dijkstra, GetNodesInShortestPathOrder } from '@/algorithms/Dijkstra';
 import type { Node as NodeType } from '../grid/Grid';
 import '@/styles/feature/dijkstra_visualizer.css';
 

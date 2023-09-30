@@ -1,19 +1,25 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-undef */
-/** @type {import('tailwindcss').Config} */
+// src/tailwind.config.js
 const { nextui } = require('@nextui-org/react');
+
+// Corrected tailwind.config.js
 module.exports = {
-  content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  content: [
+    './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
+    './index.html',
+    './src/**/*.{js,ts,jsx,tsx}',
+  ],
+  darkMode: 'class',
   theme: {
     extend: {},
   },
-  darkMode: 'class',
   plugins: [
     nextui({
-      prefix: 'nextui', // prefix for themes variables
-      addCommonColors: false, // override common colors (e.g. "blue", "green", "pink").
-      defaultTheme: 'dark', // default theme from the themes object
-      defaultExtendTheme: 'dark', // default theme to extend on custom themes
-    },
+      prefix: 'nextui',
+      addCommonColors: false,
+      defaultTheme: 'dark',
+      defaultExtendTheme: 'dark',
+    }),
   ],
 };
