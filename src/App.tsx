@@ -1,5 +1,5 @@
 import DijkstraVisualizer from './features/dijkstra/DijkstraVisualizerContainer';
-import Layout from './Layout';
+import Layout from './features/layout/Layout';
 
 function App() {
   return(

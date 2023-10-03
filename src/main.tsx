@@ -2,17 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
-import { NextUIProvider } from '@nextui-org/react';
 import './index.css';
+import '@mantine/core/styles.css';
+import { MantineProvider } from '@mantine/core';
+import '@mantine/core/styles.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <NextUIProvider>
-        <main className="dark text-foreground bg-background">
-          <App />
-        </main>
-      </NextUIProvider>
+      <MantineProvider>
+        <App />
+      </MantineProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );
