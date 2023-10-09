@@ -1,11 +1,21 @@
-export const startNodeRow = 10;
-export const startNodeCol = 5;
-export const finishNodeRow = 10;
-export const finishNodeCol = 34;
+export const getGridDimensions = (): [number, number] => {
+  if (window.innerWidth < 768) {
+    return [6, 13];
+  }
+  return [25, 40];
+};
 
 export const getInitialGrid = (): Node[][] => {
-  const grid = Array.from({ length: 25 }, (_, row) =>
-    Array.from({ length: 40 }, (_, col) => createNode(col, row)),
+  const [numRows, numCols] = getGridDimensions();
+  const startRow = Math.floor(numRows / 2);
+  const finishRow = Math.floor(numRows / 2);
+  const startCol = Math.floor(numCols / 4);
+  const finishCol = Math.floor((3 * numCols) / 4);
+
+  const grid = Array.from({ length: numRows }, (_, row) =>
+    Array.from({ length: numCols }, (_, col) =>
+      createNode(col, row, startRow, startCol, finishRow, finishCol),
+    ),
   );
   return grid;
 };
@@ -21,11 +31,18 @@ export type Node = {
   previousNode: Node | null;
 };
 
-export const createNode = (col: number, row: number): Node => ({
+export const createNode = (
+  col: number,
+  row: number,
+  startRow: number,
+  startCol: number,
+  finishRow: number,
+  finishCol: number,
+): Node => ({
   col,
   row,
-  isStart: row === startNodeRow && col === startNodeCol,
-  isFinish: row === finishNodeRow && col === finishNodeCol,
+  isStart: row === startRow && col === startCol,
+  isFinish: row === finishRow && col === finishCol,
   distance: Infinity,
   isVisited: false,
   isWall: false,

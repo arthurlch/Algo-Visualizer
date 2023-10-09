@@ -1,24 +1,36 @@
 import { useEffect, useState } from 'react';
-import {
-  getInitialGrid,
-  getNewGridWithToggledWall,
-  startNodeRow,
-  startNodeCol,
-  finishNodeRow,
-  finishNodeCol,
-} from '../grid/Grid';
+import { getInitialGrid, getNewGridWithToggledWall } from '../grid/Grid';
 import Node from '../node/Node';
 import { Dijkstra, GetNodesInShortestPathOrder } from '@/algorithms/Dijkstra';
 import type { Node as NodeType } from '../grid/Grid';
 import '@/styles/feature/dijkstra_visualizer.css';
+import { playSound } from '@/utils/play_sound';
+import { stopSound } from '@/utils/stop_sound';
+
+const soundFile = 'public/sounds_effect/synthetic.mp3';
+const audio = playSound(soundFile);
+console.log(audio);
 
 function DijkstraVisualizer(): React.ReactElement {
   const [grid, setGrid] = useState<NodeType[][]>([]);
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
+  const [startNode, setStartNode] = useState<NodeType | null>(null);
+  const [finishNode, setFinishNode] = useState<NodeType | null>(null);
+  const [audioObject, setAudioObject] = useState<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const initialGrid = getInitialGrid();
     setGrid(initialGrid);
+    for (const row of initialGrid) {
+      for (const node of row) {
+        if (node.isStart) {
+          setStartNode(node);
+        }
+        if (node.isFinish) {
+          setFinishNode(node);
+        }
+      }
+    }
   }, []);
 
   const handleMouseDown = (row: number, col: number): void => {
@@ -39,6 +51,22 @@ function DijkstraVisualizer(): React.ReactElement {
     setMouseIsPressed(false);
   };
 
+  useEffect(() => {
+    if (audioObject !== null) {
+      const visitedNodesInOrder = Dijkstra(grid, startNode!, finishNode!);
+      const nodesInShortestPathOrder = GetNodesInShortestPathOrder(finishNode!);
+      animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+    }
+  }, [audioObject]);
+
+  const visualizeDijkstra = (): void => {
+    if (startNode === null || finishNode === null) {
+      return;
+    }
+    const audio = playSound(soundFile);
+    setAudioObject(audio);
+  };
+
   const animateDijkstra = (
     visitedNodesInOrder: NodeType[],
     nodesInShortestPathOrder: NodeType[],
@@ -46,6 +74,10 @@ function DijkstraVisualizer(): React.ReactElement {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
         setTimeout(() => {
+          if (audioObject) {
+            audioObject.pause();
+            audioObject.currentTime = 0;
+          }
           animateShortestPath(nodesInShortestPathOrder);
         }, 10 * i);
         return;
@@ -59,15 +91,11 @@ function DijkstraVisualizer(): React.ReactElement {
     }
   };
 
-  const visualizeDijkstra = (): void => {
-    const startNode = grid[startNodeRow][startNodeCol];
-    const finishNode = grid[finishNodeRow][finishNodeCol];
-    const visitedNodesInOrder = Dijkstra(grid, startNode, finishNode);
-    const nodesInShortestPathOrder = GetNodesInShortestPathOrder(finishNode);
-    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
-  };
-
   const animateShortestPath = (nodesInShortestPathOrder: NodeType[]): void => {
+    console.log(audioObject);
+    console.log('animateShortestPath called');
+    stopSound(audioObject);
+    const animationDuration = 50 * nodesInShortestPathOrder.length; // Calculate total animation duration
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
@@ -76,6 +104,12 @@ function DijkstraVisualizer(): React.ReactElement {
           ?.classList.add('node-shortest-path');
       }, 50 * i);
     }
+    setTimeout(() => {
+      if (audioObject) {
+        audioObject.pause();
+        audioObject.currentTime = 0;
+      }
+    }, animationDuration);
   };
 
   return (
