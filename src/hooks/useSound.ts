@@ -1,8 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
-import { stopSound } from './stop_sound';
-import { playSound } from './play_sound';
+import { stopSound } from '../utils/stop_sound';
+import { playSound } from '../utils/play_sound';
 
-const useSound = (filePath: string): { play: () => void; stop: () => void } => {
+const useSound = (
+  filePath: string,
+): {
+  play: () => void;
+  stop: () => void;
+  audioObject: HTMLAudioElement | null;
+} => {
   const [audioObject, setAudioObject] = useState<HTMLAudioElement | null>(null);
 
   const play = (): void => {
@@ -23,7 +29,7 @@ const useSound = (filePath: string): { play: () => void; stop: () => void } => {
     };
   }, [audioObject, stop]);
 
-  return { play, stop };
+  return { play, stop, audioObject };
 };
 
 export { useSound };

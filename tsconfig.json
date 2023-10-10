@@ -11,7 +11,8 @@
       "@/routes/*": ["routes/*"],
       "@/states/*": ["states/*"],
       "@/styles/*": ["styles/*"],
-      "@/utils/*": ["utils/*"]
+      "@/utils/*": ["utils/*"],
+      "@/hooks/*": ["hooks/*"]
     },
     "moduleResolution": "node",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
