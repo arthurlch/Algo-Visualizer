@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react';
 import { getInitialGrid, getNewGridWithToggledWall } from '../grid/Grid';
-import Node from '../node/Node';
 import { Dijkstra, GetNodesInShortestPathOrder } from '@/algorithms/Dijkstra';
 import type { Node as NodeType } from '../grid/Grid';
 import '@/styles/feature/dijkstra_visualizer.css';
-import { useSound } from '@/hooks/useSound';
-
-const soundFile = 'public/sounds_effect/synthetic.mp3';
+import DijkstraVisualizerPresenter from './DijkstraVisualizerPresenter';
 
 function DijkstraVisualizer(): React.ReactElement {
   const [grid, setGrid] = useState<NodeType[][]>([]);
@@ -14,7 +11,6 @@ function DijkstraVisualizer(): React.ReactElement {
   const [isVisualizationStarted, setIsVisualizationStarted] = useState(false);
   const [startNode, setStartNode] = useState<NodeType | null>(null);
   const [finishNode, setFinishNode] = useState<NodeType | null>(null);
-  const { play, stop, audioObject } = useSound(soundFile);
 
   useEffect(() => {
     const initialGrid = getInitialGrid();
@@ -49,28 +45,20 @@ function DijkstraVisualizer(): React.ReactElement {
     setMouseIsPressed(false);
   };
 
-  /* I should go to jail for using useEffect like that
-  I really wanna refactor this 
-  1st choice is to nest each animation function under visualizeDijkstra
-  or have a custom hook for the logic
-  at the moment isVisualizationStarted is the safeGuard to avoid random play func trigger 
-  */
-
-  useEffect(() => {
-    if (audioObject !== null && isVisualizationStarted) {
-      const visitedNodesInOrder = Dijkstra(grid, startNode!, finishNode!);
-      const nodesInShortestPathOrder = GetNodesInShortestPathOrder(finishNode!);
-      animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
-    }
-  }, [audioObject, isVisualizationStarted]); // isVisualizationStarted is the safeGuard to avoid random play func trigger
-  // and so even some dependencies are missing the safeguard should do the work
   const visualizeDijkstra = (): void => {
     if (startNode === null || finishNode === null) {
       return;
     }
-    play();
-    setIsVisualizationStarted(true); // avoid random play func trigger
+    setIsVisualizationStarted(true);
   };
+
+  useEffect(() => {
+    if (isVisualizationStarted) {
+      const visitedNodesInOrder = Dijkstra(grid, startNode!, finishNode!);
+      const nodesInShortestPathOrder = GetNodesInShortestPathOrder(finishNode!);
+      animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+    }
+  }, [isVisualizationStarted]);
 
   const animateDijkstra = (
     visitedNodesInOrder: NodeType[],
@@ -79,10 +67,6 @@ function DijkstraVisualizer(): React.ReactElement {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
         setTimeout(() => {
-          if (audioObject) {
-            audioObject.pause();
-            audioObject.currentTime = 0;
-          }
           animateShortestPath(nodesInShortestPathOrder);
         }, 10 * i);
         return;
@@ -97,8 +81,8 @@ function DijkstraVisualizer(): React.ReactElement {
   };
 
   const animateShortestPath = (nodesInShortestPathOrder: NodeType[]): void => {
-    stop();
-    const animationDuration = 50 * nodesInShortestPathOrder.length; // Calculate total animation duration
+    // Calculate total animation duration
+    const animationDuration = 50 * nodesInShortestPathOrder.length;
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
@@ -108,9 +92,8 @@ function DijkstraVisualizer(): React.ReactElement {
       }, 50 * i);
     }
     setTimeout(() => {
-      stop();
+      setIsVisualizationStarted(false);
     }, animationDuration);
-    setIsVisualizationStarted(false);
   };
 
   const resetGrid = (): void => {
@@ -140,50 +123,19 @@ function DijkstraVisualizer(): React.ReactElement {
   const resetAlgorithm = (): void => {
     clearAnimations();
     resetGrid();
-    stop();
     setIsVisualizationStarted(false);
   };
 
   return (
-    <>
-      <div className="btn-wrapper">
-        <button className="btn" onClick={(): void => visualizeDijkstra()}>
-          Visualize Dijkstra Algorithm
-        </button>
-        <button
-          className="btn"
-          onClick={resetAlgorithm}
-          disabled={isVisualizationStarted}
-        >
-          Reset
-        </button>
-        <h4 className="instruction">
-          Click on the grid and hold to draw walls!
-        </h4>
-      </div>
-      <div className="grid">
-        {grid.map((row, rowIndex) => (
-          <div className="node-wrapper" key={rowIndex}>
-            {row.map((node, nodeIndex) => {
-              const { row, col, isStart, isFinish, isWall } = node;
-              return (
-                <Node
-                  key={nodeIndex}
-                  col={col}
-                  isFinish={isFinish}
-                  isStart={isStart}
-                  isWall={isWall}
-                  onMouseDown={(row, col): void => handleMouseDown(row, col)}
-                  onMouseEnter={(row, col): void => handleMouseEnter(row, col)}
-                  onMouseUp={(): void => handleMouseUp()}
-                  row={row}
-                />
-              );
-            })}
-          </div>
-        ))}
-      </div>
-    </>
+    <DijkstraVisualizerPresenter
+      grid={grid}
+      handleMouseDown={handleMouseDown}
+      handleMouseEnter={handleMouseEnter}
+      handleMouseUp={handleMouseUp}
+      visualizeDijkstra={visualizeDijkstra}
+      resetAlgorithm={resetAlgorithm}
+      isVisualizationStarted={isVisualizationStarted}
+    />
   );
 }
 
