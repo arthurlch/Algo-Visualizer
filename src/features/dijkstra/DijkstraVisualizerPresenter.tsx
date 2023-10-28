@@ -19,6 +19,10 @@ type Props = {
   visualizeDijkstra: () => void;
   resetAlgorithm: () => void;
   isVisualizationStarted: boolean;
+  currentNode: NodeType | null;
+  visitedNodes: NodeType[];
+  executionTime: number | null;
+  isAnimationFinished: boolean;
 };
 
 function DijkstraVisualizerPresenter(props: Props): ReactElement {
@@ -31,6 +35,9 @@ function DijkstraVisualizerPresenter(props: Props): ReactElement {
     visualizeDijkstra,
     resetAlgorithm,
     isVisualizationStarted,
+    currentNode,
+    executionTime,
+    isAnimationFinished,
   } = props;
 
   return (
@@ -49,13 +56,25 @@ function DijkstraVisualizerPresenter(props: Props): ReactElement {
             <Button
               color="red"
               onClick={resetAlgorithm}
-              disabled={isVisualizationStarted}
+              disabled={isVisualizationStarted || !isAnimationFinished}
             >
               Reset
             </Button>
             <Button color="indigo" onClick={(): void => setModalOpened(true)}>
               Rules
             </Button>
+          </Flex>
+          <Flex align="center" justify="center" style={{ marginTop: '16px' }}>
+            <Text size="lg" style={{ marginRight: '16px' }}>
+              Current Node:{' '}
+              {currentNode ? `(${currentNode.row}, ${currentNode.col})` : 'N/A'}
+            </Text>
+            <Text size="lg">
+              Execution Time:{' '}
+              {isAnimationFinished && executionTime !== null
+                ? `${executionTime.toFixed(2)} ms`
+                : 'N/A'}
+            </Text>
           </Flex>
 
           <Modal

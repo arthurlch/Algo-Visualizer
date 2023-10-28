@@ -1,6 +1,5 @@
 .grid {
   width: 80%;
-  margin-top: 60px;
   text-align: center;
   align-items: center;
   align-content: center;
@@ -53,7 +52,7 @@
 @media (min-width: 768px) {
   .grid {
     width: 90%;
-    margin-top: 80px;
+    margin-top: 20px;
   }
 
   .node-wrapper,
