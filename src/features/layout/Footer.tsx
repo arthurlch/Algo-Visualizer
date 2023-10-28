@@ -29,20 +29,32 @@ export function Footer(): ReactElement {
   return (
     <div style={styles.footer}>
       <div style={styles.inner}>
-        <p>ALGO V</p>
+        <p>VISUALIZE </p>
         <Group gap="xs" justify="flex-end" wrap="nowrap">
-          <ActionIcon size="lg" variant="default" radius="xl">
-            <IconBrandTwitter
-              style={{ width: rem(18), height: rem(18) }}
-              stroke={1.5}
-            />
-          </ActionIcon>
-          <ActionIcon size="lg" variant="default" radius="xl">
-            <IconBrandGithub
-              style={{ width: rem(18), height: rem(18) }}
-              stroke={1.5}
-            />
-          </ActionIcon>
+          <a
+            href="https://twitter.com/arthurlch"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <ActionIcon size="lg" variant="default" radius="xl">
+              <IconBrandTwitter
+                style={{ width: rem(18), height: rem(18) }}
+                stroke={1.5}
+              />
+            </ActionIcon>
+          </a>
+          <a
+            href="https://github.com/arthurlch"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <ActionIcon size="lg" variant="default" radius="xl">
+              <IconBrandGithub
+                style={{ width: rem(18), height: rem(18) }}
+                stroke={1.5}
+              />
+            </ActionIcon>
+          </a>
         </Group>
       </div>
     </div>
