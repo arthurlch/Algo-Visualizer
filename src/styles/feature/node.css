@@ -1,34 +1,40 @@
+/* Base node style */
 .node {
   width: 1.6rem;
   height: 1.6rem;
-  border: 2px solid rgb(255, 0, 183);
+  border: 2px solid #8a8a8a; 
   display: inline-block;
 }
 
+/* Responsive styling for smaller screens */
 @media (max-width: 768px) {
   .node {
     width: 8px;
     height: 8px;
-    border: 1px solid rgb(255, 0, 183);
+    border: 1px solid #8a8a8a;
   }
 }
 
+/* Start and Finish node styles */
 .node-start {
-  background-color: rgb(0, 255, 166);
+  background-color: #00bfff; 
 }
 
 .node-finish {
-  background-color: rgb(60, 0, 255);
+  background-color: #800080; 
 }
 
+/* Visited node style */
 .node-visited {
   animation: visitedAnimation 1.2s ease-out 0s alternate 1 forwards running;
 }
 
+/* Wall node style */
 .node-wall {
-  background-color: rgb(210, 210, 210);
+  background-color: #a9a9a9; 
 }
 
+/* Shortest path node style */
 .node-shortest-path {
   animation-name: shortestPath;
   animation-duration: 0.4s;
@@ -44,19 +50,19 @@
 @keyframes visitedAnimation {
   0% {
     transform: scale(0.3);
-    background-color: rgb(251, 255, 0);
+    background-color: #32cd32;
   }
   50% {
     transform: scale(0.4);
-    background-color: rgb(243, 216, 117);
+    background-color: #adff2f;  
   }
   75% {
     transform: scale(0.8);
-    background-color: rgb(0, 255, 34);
+    background-color: #98fb98;  
   }
   100% {
     transform: scale(1);
-    background-color: rgb(30, 237, 144);
+    background-color: #32cd32; 
   }
 }
 
@@ -64,24 +70,22 @@
 @keyframes shortestPath {
   0% {
     transform: scale(0.4);
-    background-color: rgb(248, 60, 176);
+    background-color: #ff4500;  /* Changed to OrangeRed for better visibility */
   }
   50% {
     transform: scale(0.8);
-    background-color: rgb(225, 101, 250);
+    background-color: #ff6347;  
   }
   100% {
     transform: scale(1);
-    background-color: rgb(176, 6, 255);
+    background-color: #ff4500;  
   }
 }
 
+/* Responsive styling for very small screens */
 @media (max-width: 767px) {
   .node {
     width: 50px;  
     height: 48px; 
   }
-}
-
-@media (min-width: 768px) {
 }

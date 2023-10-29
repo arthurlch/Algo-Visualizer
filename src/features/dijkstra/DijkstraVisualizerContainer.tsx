@@ -18,6 +18,7 @@ function DijkstraVisualizer(): React.ReactElement {
 
   const initializeGridAndNodes = (): void => {
     const initialGrid = getInitialGrid();
+    setIsAnimationFinished(true);
     setGrid(initialGrid);
     for (const row of initialGrid) {
       for (const node of row) {

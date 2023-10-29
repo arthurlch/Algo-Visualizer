@@ -89,7 +89,12 @@ function DijkstraVisualizerPresenter(props: Props): ReactElement {
           </Modal>
         </Flex>
 
-        <Flex align="center" justify="center">
+        <Flex
+          align="center"
+          justify="center"
+          direction="column"
+          style={{ width: '100%', height: '100%', marginTop: '16px' }}
+        >
           <div className="grid">
             {grid.map((row, rowIndex) => (
               <div className="node-wrapper" key={rowIndex}>

@@ -1,11 +1,15 @@
 .grid {
-  width: 80%;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  align-content: center;
 }
 
-.node-wrapper,
+
+.node-wrapper {
+  display: flex;
+}
+
 .btn-wrapper {
   display: flex;
   text-align: center;
