@@ -1,3 +1,9 @@
+# Demonstration
+
+
+https://github.com/arthurlch/Dijkstra-Visualizer/assets/43084242/5ed6a6be-f2a5-4041-a010-14a66ac19528
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
