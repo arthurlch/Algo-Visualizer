@@ -1,64 +1,40 @@
+/* Base node style */
 .node {
-  width: 25px;
-  height: 23px;
-  border: 1px solid rgb(255, 0, 183);
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 2px solid #8a8a8a; 
   display: inline-block;
 }
 
+/* Responsive styling for smaller screens */
+@media (max-width: 768px) {
+  .node {
+    width: 8px;
+    height: 8px;
+    border: 1px solid #8a8a8a;
+  }
+}
+
+/* Start and Finish node styles */
 .node-start {
-  background-color: rgb(0, 255, 166);
+  background-color: #00bfff; 
 }
 
 .node-finish {
-  background-color: rgb(60, 0, 255);
+  background-color: #800080; 
 }
 
-@keyframes visitedAnimation {
-  0% {
-    background-color: transparent;
-    transform: scale(1);
-  }
-  50% {
-    background-color: #00ff00;
-    transform: scale(1.2) rotate(20deg);
-  }
-  100% {
-    background-color: #ff00ff;
-    transform: scale(1) rotate(0deg);
-  }
-}
-
+/* Visited node style */
 .node-visited {
   animation: visitedAnimation 1.2s ease-out 0s alternate 1 forwards running;
 }
 
-@keyframes visitedAnimation {
-  0% {
-    transform: scale(0.3);
-    transform: translate(5px, 10%);
-    background-color: rgba(255, 96, 0);
-  }
-
-  50% {
-    transform: scale(0.4);
-    background-color: rgba(255, 84, 0);
-  }
-
-  75% {
-    transform: scale(0.8);
-    background-color: rgba(255, 145, 0);
-  }
-
-  100% {
-    transform: scale(1);
-    background-color: rgb(38, 0, 255);
-  }
-}
-
+/* Wall node style */
 .node-wall {
-  background-color: rgb(22, 22, 22);
+  background-color: #a9a9a9; 
 }
 
+/* Shortest path node style */
 .node-shortest-path {
   animation-name: shortestPath;
   animation-duration: 0.4s;
@@ -70,19 +46,46 @@
   animation-play-state: running;
 }
 
+/* Keyframes for node-visited animation */
+@keyframes visitedAnimation {
+  0% {
+    transform: scale(0.3);
+    background-color: #32cd32;
+  }
+  50% {
+    transform: scale(0.4);
+    background-color: #adff2f;  
+  }
+  75% {
+    transform: scale(0.8);
+    background-color: #98fb98;  
+  }
+  100% {
+    transform: scale(1);
+    background-color: #32cd32; 
+  }
+}
+
+/* Keyframes for node-shortest-path animation */
 @keyframes shortestPath {
   0% {
     transform: scale(0.4);
-    background-color: rgb(248, 104, 60);
+    background-color: #ff4500;  /* Changed to OrangeRed for better visibility */
   }
-
   50% {
     transform: scale(0.8);
-    background-color: rgba(250, 136, 101);
+    background-color: #ff6347;  
   }
-
   100% {
     transform: scale(1);
-    background-color: rgb(250, 136, 101);
+    background-color: #ff4500;  
+  }
+}
+
+/* Responsive styling for very small screens */
+@media (max-width: 767px) {
+  .node {
+    width: 50px;  
+    height: 48px; 
   }
 }

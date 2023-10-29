@@ -1,40 +1,44 @@
 .grid {
-  width: 80%;
-  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.node-wrapper {
+  display: flex;
+}
+
+.btn-wrapper {
+  display: flex;
   text-align: center;
   align-items: center;
   align-content: center;
 }
 
 .node-wrapper {
-  display: flex;
   margin-left: 300px;
-  text-align: center;
-  align-items: center;
-  align-content: center;
 }
 
 .btn-wrapper {
   margin-top: 30px;
   margin-left: 300px;
-  display: flex;
-  text-align: center;
-  align-items: center;
-  align-content: center;
-  display: inline-block;
 }
 
-.btn {
+.btn,
+.btn-reset {
   background-color: blue;
   color: white;
-  padding: 9px 9px 9px 9px;
+  padding: 9px;
   border-radius: 10px;
   border: blue solid 1px;
   font-size: 15px;
   font-weight: 600;
 }
 
-.btn:hover {
+.btn:hover,
+.btn-reset:hover {
   background-color: rgb(29, 29, 122);
   color: white;
   border: solid 1px white;
@@ -43,6 +47,42 @@
 .btn-reset {
   margin-left: 10px;
 }
+
 .instruction {
   font-size: 14px;
+}
+
+/* Media query for larger screens (e.g., desktops) */
+@media (min-width: 768px) {
+  .grid {
+    width: 90%;
+    margin-top: 20px;
+  }
+
+  .node-wrapper,
+  .btn-wrapper {
+    margin-left: 10%;  /* Centered with some space from the left */
+  }
+
+  .btn,
+  .btn-reset {
+    padding: 12px;
+    font-size: 18px;
+  }
+  
+  .instruction {
+    font-size: 18px;
+  }
+}
+
+/* Media query for smaller screens (e.g., tablets, mobile phones) */
+@media (max-width: 767px) {
+  .node-wrapper,
+  .btn-wrapper {
+    margin-left: 10px;
+  }
+  
+  .instruction {
+    font-size: 12px;
+  }
 }
