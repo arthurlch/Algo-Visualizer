@@ -1,88 +1,168 @@
-import { useEffect, useState } from 'react';
+/* eslint-disable no-console */
+import { useEffect } from 'react';
 import { getInitialGrid, getNewGridWithToggledWall } from '../grid/Grid';
 import { Dijkstra, GetNodesInShortestPathOrder } from '@/algorithms/Dijkstra';
 import type { Node as NodeType } from '../grid/Grid';
 import '@/styles/feature/dijkstra_visualizer.css';
 import DijkstraVisualizerPresenter from './DijkstraVisualizerPresenter';
+import { atom, useAtom } from 'jotai';
+
+const dijkstraStateAtom = atom({
+  grid: getInitialGrid(),
+  mouseIsPressed: false,
+  isVisualizationStarted: false,
+  startNode: null as NodeType | null,
+  finishNode: null as NodeType | null,
+  currentNode: null as NodeType | null,
+  executionTime: null as number | null,
+  isAnimationFinished: true,
+  visitedNodes: [] as NodeType[],
+});
 
 function DijkstraVisualizer(): React.ReactElement {
-  const [grid, setGrid] = useState<NodeType[][]>([]);
-  const [mouseIsPressed, setMouseIsPressed] = useState(false);
-  const [isVisualizationStarted, setIsVisualizationStarted] = useState(false);
-  const [startNode, setStartNode] = useState<NodeType | null>(null);
-  const [finishNode, setFinishNode] = useState<NodeType | null>(null);
-  const [currentNode, setCurrentNode] = useState<NodeType | null>(null);
-  const [executionTime, setExecutionTime] = useState<number | null>(null);
-  const [isAnimationFinished, setIsAnimationFinished] = useState(false);
-  const [visitedNodes, setVisitedNodes] = useState<NodeType[]>([]);
+  const [state, setState] = useAtom(dijkstraStateAtom);
 
   const initializeGridAndNodes = (): void => {
     const initialGrid = getInitialGrid();
-    setIsAnimationFinished(true);
-    setGrid(initialGrid);
+    let foundStartNode: NodeType | null = null;
+    let foundFinishNode: NodeType | null = null;
+
     for (const row of initialGrid) {
       for (const node of row) {
         if (node.isStart) {
-          setStartNode(node);
+          foundStartNode = node;
         }
         if (node.isFinish) {
-          setFinishNode(node);
+          foundFinishNode = node;
         }
       }
     }
+
+    if (foundStartNode && foundFinishNode) {
+      setState((prevState) => ({
+        ...prevState,
+        grid: initialGrid,
+        startNode: foundStartNode,
+        finishNode: foundFinishNode,
+        isAnimationFinished: true,
+      }));
+    }
   };
 
+  // no need to add the dependencies
   useEffect(() => {
     initializeGridAndNodes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (isVisualizationStarted && startNode && finishNode) {
-      const visitedNodesInOrder = Dijkstra(grid, startNode, finishNode);
-      const nodesInShortestPathOrder = GetNodesInShortestPathOrder(finishNode);
-      animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
-    }
-    // let's make an exception here
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isVisualizationStarted, startNode, finishNode, grid]);
-
   const handleMouseDown = (row: number, col: number): void => {
-    if (isVisualizationStarted || !isAnimationFinished) {
+    if (state.isVisualizationStarted || !state.isAnimationFinished) {
       return;
     }
-    const newGrid = getNewGridWithToggledWall(grid, row, col);
-    setGrid(newGrid);
-    setMouseIsPressed(true);
+    const newGrid = getNewGridWithToggledWall(state.grid, row, col);
+    const node = newGrid[row][col];
+    setState((prevState) => ({
+      ...prevState,
+      grid: newGrid,
+      mouseIsPressed: true,
+      startNode: node.isStart ? node : prevState.startNode,
+      finishNode: node.isFinish ? node : prevState.finishNode,
+    }));
   };
 
   const handleMouseEnter = (row: number, col: number): void => {
-    if (!mouseIsPressed || isVisualizationStarted || !isAnimationFinished) {
+    if (
+      !state.mouseIsPressed ||
+      state.isVisualizationStarted ||
+      !state.isAnimationFinished
+    ) {
       return;
     }
-    if (!mouseIsPressed) {
-      return;
-    }
-    const newGrid = getNewGridWithToggledWall(grid, row, col);
-    setGrid(newGrid);
+    const newGrid = getNewGridWithToggledWall(state.grid, row, col);
+    setState((prevState) => ({
+      ...prevState,
+      grid: newGrid,
+    }));
   };
 
   const handleMouseUp = (): void => {
-    if (isVisualizationStarted || !isAnimationFinished) {
+    if (state.isVisualizationStarted || !state.isAnimationFinished) {
       return;
     }
-    setMouseIsPressed(false);
+    setState((prevState) => ({
+      ...prevState,
+      mouseIsPressed: false,
+    }));
+  };
+
+  const checkStartFinishIsolation = (): boolean => {
+    const checkIsolation = (node: NodeType): boolean => {
+      const directions = [
+        [0, 1],
+        [0, -1],
+        [1, 0],
+        [-1, 0],
+      ];
+      return directions.every(([dx, dy]) => {
+        const neighborRow = node.row + dy;
+        const neighborCol = node.col + dx;
+        if (
+          neighborRow >= 0 &&
+          neighborRow < state.grid.length &&
+          neighborCol >= 0 &&
+          neighborCol < state.grid[0].length
+        ) {
+          const neighbor = state.grid[neighborRow][neighborCol];
+          return neighbor.isWall;
+        }
+        return true;
+      });
+    };
+
+    const startIsolated = state.startNode
+      ? checkIsolation(state.startNode)
+      : false;
+    const finishIsolated = state.finishNode
+      ? checkIsolation(state.finishNode)
+      : false;
+
+    return startIsolated || finishIsolated;
   };
 
   const visualizeDijkstra = (): void => {
-    setIsAnimationFinished(false);
-    if (startNode === null || finishNode === null) {
+    if (checkStartFinishIsolation()) {
+      console.log('Start or Finish node is isolated by walls.');
+      return;
+    }
+    if (checkStartFinishIsolation()) {
+      console.log(
+        'Start or Finish node is isolated. Cannot run the algorithm.',
+      );
+      return;
+    }
+    if (state.startNode === null || state.finishNode === null) {
+      console.log('Start or Finish node is null, cannot run algorithm.');
       return;
     }
     const startTime = performance.now();
-    const visitedNodesInOrder = Dijkstra(grid, startNode, finishNode);
+    const visitedNodesInOrder = Dijkstra(
+      state.grid,
+      state.startNode,
+      state.finishNode,
+    );
     const endTime = performance.now();
-    setExecutionTime(endTime - startTime);
-    const nodesInShortestPathOrder = GetNodesInShortestPathOrder(finishNode);
+    const nodesInShortestPathOrder = GetNodesInShortestPathOrder(
+      state.finishNode,
+    );
+
+    setState((prevState) => ({
+      ...prevState,
+      isVisualizationStarted: true,
+      isAnimationFinished: false,
+      executionTime: endTime - startTime,
+      visitedNodes: visitedNodesInOrder,
+    }));
+
     animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   };
 
@@ -99,8 +179,10 @@ function DijkstraVisualizer(): React.ReactElement {
       }
       setTimeout(() => {
         const node = visitedNodesInOrder[i];
-        setCurrentNode(node);
-        setVisitedNodes((prevNodes) => [...prevNodes, node]);
+        setState((prevState) => ({
+          ...prevState,
+          currentNode: node,
+        }));
         document
           .getElementById(`node-${node.row}-${node.col}`)
           ?.classList.add('node-visited');
@@ -109,7 +191,6 @@ function DijkstraVisualizer(): React.ReactElement {
   };
 
   const animateShortestPath = (nodesInShortestPathOrder: NodeType[]): void => {
-    // Calculate total animation duration
     const animationDuration = 50 * nodesInShortestPathOrder.length;
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
@@ -120,8 +201,11 @@ function DijkstraVisualizer(): React.ReactElement {
       }, 50 * i);
     }
     setTimeout(() => {
-      setIsVisualizationStarted(false);
-      setIsAnimationFinished(true);
+      setState((prevState) => ({
+        ...prevState,
+        isVisualizationStarted: false,
+        isAnimationFinished: true,
+      }));
     }, animationDuration);
   };
 
@@ -137,25 +221,28 @@ function DijkstraVisualizer(): React.ReactElement {
   const resetAlgorithm = (): void => {
     clearAnimations();
     initializeGridAndNodes();
-    setIsVisualizationStarted(false);
-    setIsAnimationFinished(false);
-    setCurrentNode(null);
-    setVisitedNodes([]);
+    setState((prevState) => ({
+      ...prevState,
+      isVisualizationStarted: false,
+      isAnimationFinished: true,
+      currentNode: null,
+      visitedNodes: [],
+    }));
   };
 
   return (
     <DijkstraVisualizerPresenter
-      grid={grid}
+      grid={state.grid}
       handleMouseDown={handleMouseDown}
       handleMouseEnter={handleMouseEnter}
       handleMouseUp={handleMouseUp}
       visualizeDijkstra={visualizeDijkstra}
       resetAlgorithm={resetAlgorithm}
-      isVisualizationStarted={isVisualizationStarted}
-      currentNode={currentNode}
-      visitedNodes={visitedNodes}
-      executionTime={executionTime}
-      isAnimationFinished={isAnimationFinished}
+      isVisualizationStarted={state.isVisualizationStarted}
+      currentNode={state.currentNode}
+      visitedNodes={state.visitedNodes}
+      executionTime={state.executionTime}
+      isAnimationFinished={state.isAnimationFinished}
     />
   );
 }

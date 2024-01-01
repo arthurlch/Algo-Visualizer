@@ -39,7 +39,6 @@ function DijkstraVisualizerPresenter(props: Props): ReactElement {
     executionTime,
     isAnimationFinished,
   } = props;
-
   return (
     <>
       <Container size="responsive">

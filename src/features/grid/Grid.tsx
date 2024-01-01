@@ -54,9 +54,17 @@ export const getNewGridWithToggledWall = (
   row: number,
   col: number,
 ): Node[][] => {
-  const newGrid = [...grid];
-  const node = { ...newGrid[row][col] };
-  node.isWall = !node.isWall;
-  newGrid[row][col] = node;
-  return newGrid;
+  return grid.map((innerRow, rowIndex) =>
+    innerRow.map((node, colIndex) => {
+      if (
+        rowIndex === row &&
+        colIndex === col &&
+        !node.isStart &&
+        !node.isFinish
+      ) {
+        return { ...node, isWall: !node.isWall };
+      }
+      return node;
+    }),
+  );
 };
